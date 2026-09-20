@@ -269,3 +269,56 @@ label {
     transition-duration: 0.01ms !important;
   }
 }
+
+// ─── Cajita de Pagos de Payphone ──────────────────────────────────────
+// El interior del formulario es de Payphone (Bootstrap con prefijo `ppb-`). Acá solo
+// se ajusta lo mínimo para que conviva con la marca: ancho completo en móvil, radios
+// y fuente. El contenedor, el encabezado, el resumen y los estados son nuestros
+// (components/checkout/PayphoneBox.vue). No tocar colores ni estructura: cambian de
+// versión del CDN sin aviso.
+#pp-button {
+  --ppb-bs-font-sans-serif: #{$font-principal};
+  --ppb-bs-body-font-family: #{$font-principal};
+  --ppb-bs-border-radius: #{$radius-sm};
+  width: 100%;
+  max-width: 100%;
+  font-family: $font-principal;
+
+  .ppb-container {
+    max-width: 100%;
+    padding-inline: 0;
+
+    @include from('md') {
+      max-width: 560px;
+      margin-inline: 0;
+    }
+  }
+
+  // Nuestros h1–h4 globales van en Balgin y mayúsculas; dentro de la Cajita los
+  // títulos de Payphone vuelven a texto normal.
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: $font-principal;
+    line-height: 1.2;
+    text-transform: none;
+  }
+
+  .ppb-card {
+    border-radius: $radius-md;
+  }
+
+  .ppb-form-control,
+  .ppb-form-select,
+  .ppb-btn,
+  .ppb-button {
+    font-family: $font-principal;
+    border-radius: $radius-sm;
+  }
+
+  .ppb-btn {
+    min-height: 48px;
+  }
+}
