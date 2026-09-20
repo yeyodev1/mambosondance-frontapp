@@ -1,30 +1,38 @@
-// Paleta de MamboSon Dance. Semántica primero: los componentes hablan de tinta,
-// papel y acento, no de "rosa" o "gris 700".
+// Paleta de MamboSon según el Manual de Marca 2025: rojo #CD1719 y blanco como
+// principales; vino #871913, vino profundo #460B00 y negro como secundarios.
+// Semántica primero: los componentes hablan de tinta, papel y acento.
 @use 'sass:color';
 
 // Acento de marca
 $accent: #cd1719;
-$accent-deep: color.adjust($accent, $lightness: -12%);
+$accent-deep: #871913; // "Vínculo / Proceso" en el manual
+$wine: #460b00; // "Dominio": fondos oscuros cálidos
+$night: #0e0202; // negro de marca con un punto de vino, para heros y footer
 $accent-soft: color.mix($accent, #ffffff, 14%);
 
 // Superficies
-$paper: #fdfcfa; // fondo base
+$paper: #fbf7f2; // fondo base
 $surface: #ffffff; // superficies elevadas
-$sand: #f1ece6; // bloques suaves
-$line: #e7e1d9; // bordes
+$sand: #f3ebe1; // bloques suaves
+$line: #e8ddd0; // bordes
 
 // Texto
-$ink: #191423; // texto principal
-$ink-soft: #4a4552; // texto secundario
-$ink-muted: #8a8590; // terciario / labels
+$ink: #170705; // texto principal
+$ink-soft: #55433f; // texto secundario
+$ink-muted: #94827c; // terciario / labels
 
-$overlay: rgba(#100c14, 0.55);
+$overlay: rgba(#0e0202, 0.62);
+
+// Texto sobre fondos oscuros
+$on-dark: #fbf7f2;
+$on-dark-soft: rgba(#fbf7f2, 0.72);
+$line-dark: rgba(#fbf7f2, 0.14);
 
 // Estados
 $success: #3bb77e;
 $warning: #d9a441;
 $info: #6a8caf;
-$danger: #c2554f;
+$danger: #b3261e;
 $success-bg: rgba($success, 0.12);
 $warning-bg: rgba($warning, 0.12);
 $info-bg: rgba($info, 0.12);
