@@ -20,9 +20,9 @@ $space-xl: clamp(3rem, 6vw, 5rem);
 $space-section: clamp(4.5rem, 9vw, 8rem);
 
 // Radios y curvas
-$radius-sm: 10px;
-$radius-md: 18px;
-$radius-lg: 28px;
+$radius-sm: 8px;
+$radius-md: 14px;
+$radius-lg: 22px;
 $radius-pill: 999px;
 $ease: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -33,15 +33,26 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: $accent-deep;
+  color: $accent;
 }
 
-@mixin display($size: $display-md, $weight: 500) {
+@mixin display($size: $display-md, $weight: 700) {
   font-family: $font-display;
   font-size: $size;
   font-weight: $weight;
-  font-optical-sizing: auto;
-  line-height: 1.06;
-  letter-spacing: -0.02em;
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
   text-wrap: balance;
+}
+
+// La palabra manuscrita que acompaña a un título ("se siente", "sin prisa").
+// Jane Austen dibuja pequeño: por eso se escala por encima del título.
+@mixin script($size: $display-md) {
+  font-family: $font-script;
+  font-size: calc(#{$size} * 1.25);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  text-transform: none;
 }
