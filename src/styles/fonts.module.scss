@@ -1,7 +1,13 @@
-// Solo variables. Las fuentes se cargan con <link> en index.html: este archivo
-// se inyecta en cada SFC vía vite.config.ts, así que no debe emitir CSS.
+// Solo variables. Las fuentes se cargan en index.html (Albert Sans) y con
+// @font-face en global.scss (Balgin Display y Jane Austen, del manual de marca):
+// este archivo se inyecta en cada SFC, así que no debe emitir CSS.
 
-$font-display: 'Fraunces', Georgia, serif;
-$font-principal: 'Montserrat', system-ui, sans-serif;
+// Balgin Display: títulos y palabras clave, siempre textos cortos (manual, pág. 23).
+$font-display: 'Balgin Display', 'Albert Sans', system-ui, sans-serif;
+// Jane Austen: la caligrafía del "se siente" — una o dos palabras, nunca párrafos.
+$font-script: 'Jane Austen', 'Snell Roundhand', cursive;
+// El manual pide Acumin para texto largo; su licencia no permite servirla
+// auto-hospedada, así que usamos Albert Sans, que ya aparece en el propio manual.
+$font-principal: 'Albert Sans', system-ui, -apple-system, sans-serif;
 $font-secondary: $font-principal;
 $font-body: $font-principal;
