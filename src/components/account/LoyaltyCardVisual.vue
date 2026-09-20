@@ -64,9 +64,12 @@ const slots = computed(() =>
     font-size: $text-sm;
     white-space: nowrap;
 
+    // Albert Sans y no Balgin: el "0" de Balgin es una forma rellena y a este
+    // tamaño se lee como una mancha, justo en la tarjeta recién estrenada.
     strong {
-      font-family: $font-display;
+      font-family: $font-principal;
       font-size: $display-sm;
+      font-weight: 700;
       line-height: 1;
     }
   }
