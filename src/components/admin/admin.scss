@@ -1,0 +1,269 @@
+// Piezas de maquetación compartidas por todo el panel. Se importa UNA vez desde
+// AdminLayout.vue, así viaja solo en el chunk del admin. Los tokens llegan
+// inyectados por Vite (additionalData): no repetir @use.
+// Prefijo `adm-` para no chocar con el sitio público. Mobile first, todo flex.
+
+.adm-stack {
+  @include flex(column, stretch, flex-start, 1.25rem);
+}
+
+// ── Barra de filtros ────────────────────────────────────────────────
+.adm-toolbar {
+  @include flex(column, stretch, flex-start, 0.65rem);
+
+  @include from('md') {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+
+    > * {
+      flex: 1 1 200px;
+    }
+
+    > .btn,
+    > .adm-toolbar__fixed {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+.adm-tabs {
+  @include flex(row, stretch, flex-start, 0.35rem);
+  background: $sand;
+  border-radius: $radius-pill;
+  padding: 0.3rem;
+}
+
+.adm-tab {
+  flex: 1 1 0;
+  min-height: 44px;
+  padding: 0.4rem 0.9rem;
+  border-radius: $radius-pill;
+  font-size: $text-sm;
+  font-weight: 600;
+  color: $ink-soft;
+  @include transition(background-color);
+
+  &--active {
+    background: $surface;
+    color: $ink;
+    box-shadow: $shadow-sm;
+  }
+}
+
+// ── Listados: tarjeta apilada en móvil, fila con columnas en desktop ─
+.adm-list {
+  @include flex(column, stretch, flex-start, 0.65rem);
+}
+
+.adm-row {
+  @include card;
+  @include flex(column, stretch, flex-start, 0.75rem);
+  padding: 1rem;
+
+  @include from('md') {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.85rem 1.1rem;
+  }
+
+  &__thumb {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border-radius: $radius-sm;
+    object-fit: cover;
+    background: $sand;
+    @include flex(row, center, center);
+    color: $ink-muted;
+  }
+
+  &__head {
+    @include flex(row, center, flex-start, 0.75rem);
+    flex: 2 1 0;
+    min-width: 0;
+  }
+
+  &__main {
+    @include flex(column, flex-start, flex-start, 0.15rem);
+    flex: 2 1 0;
+    min-width: 0;
+  }
+
+  &__title {
+    font-weight: 600;
+    color: $ink;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  &__meta {
+    font-size: $text-sm;
+    color: $ink-soft;
+    overflow-wrap: anywhere;
+  }
+
+  // Dato con etiqueta: en móvil "Vence · 30 nov"; en desktop ocupa una columna.
+  &__cell {
+    @include flex(row, baseline, space-between, 0.75rem);
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: $text-sm;
+
+    @include from('md') {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.1rem;
+    }
+  }
+
+  &__label {
+    font-size: $text-xs;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $ink-muted;
+  }
+
+  &__actions {
+    @include flex(row, center, flex-start, 0.4rem);
+    flex-wrap: wrap;
+    border-top: 1px solid $line;
+    padding-top: 0.7rem;
+
+    @include from('md') {
+      flex: 0 0 auto;
+      justify-content: flex-end;
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+}
+
+// Botón de acción de fila: más chico que .btn, pero todavía cómodo al dedo.
+.adm-action {
+  @include flex(row, center, center, 0.4rem);
+  min-height: 42px;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid $line;
+  border-radius: $radius-pill;
+  background: $surface;
+  font-size: $text-sm;
+  font-weight: 600;
+  color: $ink;
+  @include transition(background-color);
+
+  &:hover {
+    background: $sand;
+  }
+
+  &--danger {
+    color: $danger;
+  }
+
+  &--primary {
+    background: $accent;
+    border-color: $accent;
+    color: $surface;
+
+    &:hover {
+      background: $accent-deep;
+    }
+  }
+
+  &--icon {
+    width: 42px;
+    padding: 0;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// ── Formularios ─────────────────────────────────────────────────────
+.adm-form {
+  @include flex(column, stretch, flex-start, 1.1rem);
+
+  &__row {
+    @include flex-cards(220px, 1rem);
+  }
+
+  &__actions {
+    @include flex(column-reverse, stretch, flex-start, 0.6rem);
+
+    @include from('md') {
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.adm-help {
+  font-size: $text-xs;
+  color: $ink-muted;
+  line-height: 1.45;
+}
+
+.adm-subtitle {
+  font-family: $font-principal;
+  font-size: $text-base;
+  font-weight: 700;
+  text-transform: none;
+  line-height: 1.3;
+  color: $ink;
+}
+
+// Opción seleccionable tipo tarjeta (radio o checkbox oculto + label).
+.adm-option {
+  @include flex(row, flex-start, flex-start, 0.75rem);
+  min-height: 52px;
+  padding: 0.8rem 0.95rem;
+  margin: 0;
+  border: 1px solid $line;
+  border-radius: $radius-sm;
+  background: $surface;
+  font-size: $text-sm;
+  font-weight: 500;
+  color: $ink;
+  cursor: pointer;
+  @include transition(border-color);
+
+  &__mark {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border: 2px solid $ink-muted;
+    border-radius: 50%;
+    @include flex(row, center, center);
+    font-size: 0.7rem;
+    color: transparent;
+
+    &--square {
+      border-radius: 6px;
+    }
+  }
+
+  &__text {
+    @include flex(column, flex-start, flex-start, 0.1rem);
+    min-width: 0;
+  }
+
+  &--selected {
+    border-color: $accent;
+    background: rgba($accent, 0.04);
+
+    .adm-option__mark {
+      border-color: $accent;
+      background: $accent;
+      color: $surface;
+    }
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgba($accent, 0.15);
+  }
+}
