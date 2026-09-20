@@ -1,6 +1,27 @@
 // index.scss llega inyectado por Vite (additionalData) — no repetir @use aquí.
 // Este archivo se importa UNA sola vez desde main.ts: acá va todo lo que emite CSS.
 
+@font-face {
+  font-family: 'Balgin Display';
+  src: url('/fonts/BalginDisplay-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Balgin Display';
+  src: url('/fonts/BalginDisplay-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Jane Austen';
+  src: url('/fonts/JaneAusten.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -47,8 +68,9 @@ h2,
 h3,
 h4 {
   font-family: $font-display;
-  font-weight: 500;
-  line-height: 1.1;
+  font-weight: 700;
+  line-height: 1.02;
+  text-transform: uppercase;
   text-wrap: balance;
 }
 
@@ -121,9 +143,11 @@ label {
   justify-content: center;
   gap: 0.5rem;
   font-family: $font-principal;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  min-height: 48px; // objetivo táctil cómodo en el celular
   padding: 0.85rem 1.8rem;
   border-radius: $radius-pill;
   @include transition;
@@ -156,6 +180,31 @@ label {
       background: $ink;
       color: $surface;
     }
+  }
+
+  // Sobre fondos oscuros o fotos
+  &--light {
+    background: $surface;
+    color: $accent;
+
+    &:hover {
+      background: $paper;
+      transform: translateY(-1px);
+    }
+  }
+
+  &--outline-light {
+    border: 1px solid rgba($on-dark, 0.55);
+    color: $on-dark;
+
+    &:hover {
+      background: $on-dark;
+      color: $wine;
+    }
+  }
+
+  &--block {
+    width: 100%;
   }
 
   &--danger {
