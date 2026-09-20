@@ -40,8 +40,9 @@ export function formatTime(value: string | Date): string {
   return time.format(typeof value === 'string' ? new Date(value) : value)
 }
 
-/** 3725 → "1 h 2 min"; 540 → "9 min". */
+/** 3725 → "1 h 2 min"; 540 → "9 min"; 40 → "40 s". */
 export function formatDuration(seconds: number): string {
+  if (seconds > 0 && seconds < 60) return `${Math.round(seconds)} s`
   const minutes = Math.round(seconds / 60)
   if (minutes < 60) return `${minutes} min`
   const hours = Math.floor(minutes / 60)
