@@ -73,7 +73,8 @@ const routes: Array<RouteRecordRaw> = [
     path: '/checkout',
     name: 'Checkout',
     component: () => import('@/views/CheckoutView.vue'),
-    meta: { title: 'Finalizar compra', requiresAuth: true },
+    // Comprar no exige cuenta: el comprador deja su correo y los accesos le llegan ahí.
+    meta: { title: 'Finalizar compra' },
   },
   {
     // Payphone redirige acá con ?id=&clientTransactionId=. La URL registrada en
@@ -83,7 +84,14 @@ const routes: Array<RouteRecordRaw> = [
     alias: '/pago/respuesta',
     name: 'PaymentResult',
     component: () => import('@/views/PagoRespuestaView.vue'),
-    meta: { title: 'Resultado del pago', requiresAuth: true },
+    meta: { title: 'Resultado del pago' },
+  },
+  {
+    // "Encontrar mi compra": reenvía por correo los accesos de una compra ya pagada.
+    path: '/mi-compra',
+    name: 'FindPurchase',
+    component: () => import('@/views/MiCompraView.vue'),
+    meta: { title: 'Encontrar mi compra' },
   },
   {
     path: '/login',
