@@ -7,11 +7,9 @@ import PayphoneBox from '@/components/checkout/PayphoneBox.vue'
 import CheckoutNotice from '@/components/checkout/CheckoutNotice.vue'
 import StateBlock from '@/components/account/StateBlock.vue'
 import { useCheckout } from '@/composables/useCheckout'
-import { useUserStore } from '@/stores/user'
 import { studentCopy } from '@/config/student'
 
 const copy = studentCopy.checkout
-const userStore = useUserStore()
 const {
   cart,
   step,
@@ -19,6 +17,9 @@ const {
   formError,
   notice,
   buyer,
+  emailConfirm,
+  isGuest,
+  needsEmailConfirm,
   shipping,
   buyerErrors,
   shippingErrors,
@@ -94,6 +95,12 @@ const isPayment = computed(() => step.value === 'payment' && Boolean(order.value
     <div v-else class="checkout__layout">
       <div class="checkout__main">
         <template v-if="isPayment && payphone">
+          <p v-if="order" class="checkout__target">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <span>
+              {{ copy.emailTarget }} <strong>{{ order.buyer.email || buyer.email }}</strong>
+            </span>
+          </p>
           <PayphoneBox
             :key="payphone.clientTransactionId"
             :config="payphone"
@@ -109,7 +116,22 @@ const isPayment = computed(() => step.value === 'payment' && Boolean(order.value
         </template>
 
         <form v-else class="checkout__form" novalidate @submit.prevent="createOrder">
-          <BuyerForm :buyer="buyer" :errors="buyerErrors" :email="userStore.user?.email" />
+          <div class="checkout__buyer">
+            <!-- Atajo para quien ya tiene cuenta; comprar nunca depende de él. -->
+            <p v-if="isGuest" class="checkout__login">
+              {{ copy.loginQuestion }}
+              <RouterLink :to="{ name: 'Login', query: { next: '/checkout' } }">
+                {{ copy.loginLink }}
+              </RouterLink>
+            </p>
+            <BuyerForm
+              v-model:email-confirm="emailConfirm"
+              :buyer="buyer"
+              :errors="buyerErrors"
+              :guest="isGuest"
+              :confirm-email="needsEmailConfirm"
+            />
+          </div>
           <ShippingForm
             v-if="cart.hasPhysical"
             :shipping="shipping"
@@ -214,6 +236,43 @@ const isPayment = computed(() => step.value === 'payment' && Boolean(order.value
       flex: 0 0 360px;
       position: sticky;
       top: 6rem;
+    }
+  }
+
+  &__buyer {
+    @include flex(column, stretch, flex-start, 0.6rem);
+  }
+
+  &__login {
+    font-size: $text-sm;
+    color: $ink-soft;
+
+    a {
+      display: inline-block;
+      padding-block: 0.55rem;
+      font-weight: 700;
+      color: $accent;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  &__target {
+    @include flex(row, flex-start, flex-start, 0.6rem);
+    padding: 0.8rem 1rem;
+    font-size: $text-sm;
+    color: $ink-soft;
+    background: $sand;
+    border-radius: $radius-sm;
+    overflow-wrap: anywhere;
+
+    i {
+      margin-top: 0.25rem;
+      color: $accent-deep;
+    }
+
+    strong {
+      color: $ink;
     }
   }
 
