@@ -14,6 +14,8 @@ const props = defineProps<{
   maxlength?: number
   textarea?: boolean
   optional?: boolean
+  /** Dato que se muestra pero no se edita (el correo de la cuenta en el checkout). */
+  readonly?: boolean
 }>()
 
 const model = defineModel<string>({ required: true })
@@ -56,6 +58,7 @@ const describedBy = computed(() =>
         :inputmode="inputmode"
         :placeholder="placeholder"
         :required="required"
+        :readonly="readonly"
         :maxlength="maxlength"
         :aria-invalid="Boolean(error)"
         :aria-describedby="describedBy"
@@ -106,6 +109,12 @@ const describedBy = computed(() =>
 
     .field--invalid & {
       border-color: $danger;
+    }
+
+    &:read-only {
+      background: $sand;
+      color: $ink-soft;
+      cursor: default;
     }
   }
 
