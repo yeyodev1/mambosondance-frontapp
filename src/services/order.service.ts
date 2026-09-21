@@ -2,8 +2,8 @@ import APIBase from './httpBase'
 import type {
   Buyer,
   Order,
+  OrderConfirmation,
   OrderItemInput,
-  OrderStatus,
   PayphoneConfig,
   PublicSettings,
   Shipping,
@@ -21,11 +21,6 @@ export interface CreateOrderResponse {
   payphone: PayphoneConfig
 }
 
-export interface ConfirmOrderResponse {
-  order: Order
-  status: Exclude<OrderStatus, 'pending'>
-}
-
 class OrderService extends APIBase {
   /** El servidor recalcula precios: acá solo viajan ids y cantidades. */
   async create(payload: CreateOrderPayload): Promise<CreateOrderResponse> {
@@ -33,9 +28,12 @@ class OrderService extends APIBase {
     return data
   }
 
-  /** Idempotente en el backend: recargar la página de respuesta no duplica nada. */
-  async confirm(id: string, clientTransactionId: string): Promise<ConfirmOrderResponse> {
-    const { data } = await this.post<ConfirmOrderResponse>(
+  /**
+   * Idempotente en el backend: recargar la página de respuesta no duplica nada.
+   * No exige sesión: el `clientTransactionId` hace de credencial del comprador.
+   */
+  async confirm(id: string, clientTransactionId: string): Promise<OrderConfirmation> {
+    const { data } = await this.post<OrderConfirmation>(
       'orders/confirm',
       { id, clientTransactionId },
       undefined,
@@ -43,6 +41,14 @@ class OrderService extends APIBase {
       { timeout: 30000 },
     )
     return data
+  }
+
+  /**
+   * "Encontrar mi compra": reenvía por correo los accesos de las compras pagadas.
+   * Responde siempre lo mismo, exista o no el correo, para no revelar quién compró.
+   */
+  async find(email: string, number?: string): Promise<void> {
+    await this.post<{ ok: boolean }>('orders/find', { email, ...(number ? { number } : {}) })
   }
 
   async mine(): Promise<Order[]> {
