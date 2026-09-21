@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { site, whatsappLink } from '@/config/site'
+import { studentCopy } from '@/config/student'
 import { useSettingsStore } from '@/stores/settings'
 import WhatsappFab from '@/components/ui/WhatsappFab.vue'
 
@@ -42,6 +43,10 @@ onMounted(() => settings.load())
           {{ link.label }}
         </RouterLink>
         <RouterLink to="/contacto" class="footer__link">Contacto</RouterLink>
+        <!-- Quien compró sin cuenta vuelve al sitio buscando esto: va a la vista, no escondido. -->
+        <RouterLink :to="{ name: 'FindPurchase' }" class="footer__link">
+          {{ studentCopy.auth.findPurchase.navLabel }}
+        </RouterLink>
       </nav>
 
       <div class="footer__col">
