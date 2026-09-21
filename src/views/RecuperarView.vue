@@ -75,6 +75,12 @@ async function submit() {
 
     <template #links>
       <RouterLink :to="{ name: 'Login', query: nextQuery }">Volver a ingresar</RouterLink>
+      <p>
+        {{ studentCopy.auth.findPurchase.entryQuestion }}
+        <RouterLink :to="{ name: 'FindPurchase' }">
+          {{ studentCopy.auth.findPurchase.entryLink }}
+        </RouterLink>
+      </p>
     </template>
   </AuthShell>
 </template>
