@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { formatDate } from '@/utils/format'
+import { studentCopy } from '@/config/student'
 import type { Ticket } from '@/types'
 
-defineProps<{ tickets: Ticket[] }>()
+// `account` = hay sesión: solo entonces tiene sentido mandar a "Mis entradas".
+// Quien compró sin cuenta tiene los códigos acá y en su correo.
+defineProps<{ tickets: Ticket[]; account?: boolean }>()
 </script>
 
 <template>
@@ -17,7 +20,11 @@ defineProps<{ tickets: Ticket[] }>()
         <p class="codes__code">{{ ticket.code }}</p>
       </li>
     </ul>
-    <RouterLink class="codes__link" to="/cuenta?tab=entradas">
+    <p class="codes__note">
+      <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+      {{ studentCopy.payment.ticketsNote }}
+    </p>
+    <RouterLink v-if="account" class="codes__link" to="/cuenta?tab=entradas">
       Ver mis entradas con su código QR <i class="fa-solid fa-arrow-right"></i>
     </RouterLink>
   </section>
@@ -67,6 +74,16 @@ defineProps<{ tickets: Ticket[] }>()
     font-weight: 700;
     letter-spacing: 0.12em;
     color: $accent-deep;
+  }
+
+  &__note {
+    font-size: $text-sm;
+    color: $ink-soft;
+
+    i {
+      margin-right: 0.35rem;
+      color: $accent-deep;
+    }
   }
 
   &__link {
