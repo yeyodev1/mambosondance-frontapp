@@ -84,6 +84,12 @@ async function submit() {
         ¿Primera vez en MamboSon?
         <RouterLink :to="{ name: 'Register', query: nextQuery }">Crea tu cuenta</RouterLink>
       </p>
+      <p>
+        {{ studentCopy.auth.findPurchase.entryQuestion }}
+        <RouterLink :to="{ name: 'FindPurchase' }">
+          {{ studentCopy.auth.findPurchase.entryLink }}
+        </RouterLink>
+      </p>
     </template>
   </AuthShell>
 </template>
