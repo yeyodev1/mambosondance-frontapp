@@ -1,9 +1,10 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
 import { orderService } from '@/services/order.service'
-import { meService } from '@/services/me.service'
-import type { ApiError, Order, Ticket } from '@/types'
+import { studentCopy } from '@/config/student'
+import type { ApiError, Order, OrderConfirmation, Ticket } from '@/types'
 
 export type PaymentState = 'confirming' | 'paid' | 'canceled' | 'failed' | 'error'
 
@@ -14,38 +15,44 @@ const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve,
  * Payphone reversa el cobro si nadie lo confirma en 5 minutos. Por eso `confirm()`
  * se llama apenas monta la vista y reintenta sola ante fallos de red; el backend es
  * idempotente, así que recargar la página repite la llamada sin efectos dobles.
+ *
+ * La vista no exige sesión: todo lo que pinta (entradas, cursos, correo) viene en la
+ * respuesta de la confirmación, no de los endpoints `/me/*`.
  */
 export function usePaymentResult() {
   const route = useRoute()
   const cart = useCartStore()
+  const userStore = useUserStore()
 
   const state = ref<PaymentState>('confirming')
   const message = ref('')
   const order = ref<Order | null>(null)
   const tickets = ref<Ticket[]>([])
-  const hasCourses = ref(false)
+  const courses = ref<OrderConfirmation['courses']>([])
+  const hasPhysical = ref(false)
+  const email = ref('')
+  /** La compra creó la cuenta y el backend entregó la sesión para entrar de una. */
+  const accountCreated = ref(false)
   let running = false
 
-  const hasPhysical = computed(
-    () => Boolean(order.value?.shipping) || (order.value?.fulfillment ?? 'none') !== 'none',
-  )
+  const hasSession = computed(() => userStore.isAuthenticated)
 
   const param = (value: unknown) => (typeof value === 'string' ? value : '')
 
-  /** El pedido no dice qué ítems son cursos: se cruza con lo que el alumno ya tiene. */
-  async function loadExtras(paid: Order) {
-    const productIds = paid.items.filter((i) => i.kind === 'product').map((i) => i.product)
-    const wantsTickets = paid.items.some((i) => i.kind === 'ticket')
+  async function applyPaid(result: OrderConfirmation) {
+    cart.clear()
+    tickets.value = result.tickets ?? []
+    courses.value = result.courses ?? []
+    hasPhysical.value = Boolean(result.hasPhysical)
+    email.value = result.email || result.order.buyer?.email || ''
+    accountCreated.value = Boolean(result.session)
 
-    const [mine, courses] = await Promise.allSettled([
-      wantsTickets ? meService.tickets() : Promise.resolve([]),
-      productIds.length ? meService.courses() : Promise.resolve([]),
-    ])
-    if (mine.status === 'fulfilled') {
-      tickets.value = mine.value.filter((ticket) => ticket.order === paid.id)
-    }
-    if (courses.status === 'fulfilled') {
-      hasCourses.value = courses.value.some((c) => productIds.includes(c.product.id))
+    if (result.session) {
+      userStore.setSession(result.session.token, result.session.user)
+    } else if (userStore.hasToken && !userStore.user) {
+      // Volver de Payphone recarga la app: la sesión propia aún no está restaurada y
+      // de ella depende qué botón se muestra.
+      await userStore.restore()
     }
   }
 
@@ -55,8 +62,7 @@ export function usePaymentResult() {
     const clientTransactionId = param(route.query.clientTransactionId)
     if (!id || !clientTransactionId) {
       state.value = 'failed'
-      message.value =
-        'No recibimos los datos del pago. Si pagaste, revisa tus pedidos en tu cuenta.'
+      message.value = studentCopy.payment.missingParams
       return
     }
 
@@ -68,17 +74,16 @@ export function usePaymentResult() {
         try {
           const result = await orderService.confirm(id, clientTransactionId)
           order.value = result.order
+          if (result.status === 'paid') await applyPaid(result)
           state.value = result.status
-          if (result.status === 'paid') {
-            cart.clear()
-            await loadExtras(result.order)
-          }
           return
         } catch (e) {
           const error = e as ApiError
           // 4xx es una respuesta definitiva del API; insistir solo tiene sentido si
           // el servidor o la red fallaron.
-          const transient = error.status >= 500 || error.status === 408
+          // Un 401 es una sesión vencida, que httpBase ya borró: la confirmación no
+          // necesita sesión, así que se repite sin token en vez de dejar el cobro en el aire.
+          const transient = error.status >= 500 || error.status === 408 || error.status === 401
           if (!transient || attempt === RETRIES) {
             state.value = 'error'
             message.value = error.message
@@ -92,5 +97,16 @@ export function usePaymentResult() {
     }
   }
 
-  return { state, message, order, tickets, hasCourses, hasPhysical, confirm }
+  return {
+    state,
+    message,
+    order,
+    tickets,
+    courses,
+    hasPhysical,
+    email,
+    accountCreated,
+    hasSession,
+    confirm,
+  }
 }
