@@ -192,6 +192,8 @@ export interface Shipping {
 
 export interface Buyer {
   name: string
+  /** Obligatorio al comprar sin sesión: ahí llegan los accesos. */
+  email: string
   phone: string
   documentId: string
 }
@@ -223,6 +225,17 @@ export type OrderItemInput =
       selectedOptions?: Record<string, string>
     }
   | { kind: 'ticket'; eventId: string; tierId: string; quantity: number }
+
+/** Respuesta de POST /orders/confirm. `session` solo llega si la compra creó la cuenta. */
+export interface OrderConfirmation {
+  order: Order
+  status: 'paid' | 'canceled' | 'failed'
+  tickets: Ticket[]
+  courses: { slug: string; title: string }[]
+  hasPhysical: boolean
+  email: string
+  session: { token: string; user: SessionUser } | null
+}
 
 export interface PayphoneConfig {
   token: string
