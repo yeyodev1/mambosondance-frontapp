@@ -1,7 +1,9 @@
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { useUserStore } from '@/stores/user'
 import { orderService } from '@/services/order.service'
+import { rules } from '@/composables/useFormErrors'
+import { studentCopy } from '@/config/student'
 import type { ApiError, Buyer, Order, PayphoneConfig, Shipping } from '@/types'
 
 /** La Cajita de Payphone deja de aceptar el pago a los 10 minutos. */
@@ -10,6 +12,8 @@ const ATTEMPT_SECONDS = 600
 export type CheckoutStep = 'details' | 'payment'
 export type CheckoutNoticeKind = 'unavailable' | 'conflict'
 export type FieldErrors<T> = Partial<Record<keyof T, string>>
+/** `emailConfirm` no viaja al API: solo existe para atrapar un correo mal tipeado. */
+export type BuyerErrors = FieldErrors<Buyer & { emailConfirm: string }>
 
 const digits = (value: string) => value.replace(/\D/g, '')
 
@@ -24,9 +28,18 @@ export function useCheckout() {
 
   const buyer = reactive<Buyer>({
     name: userStore.user?.name || '',
+    email: userStore.user?.email || '',
     phone: userStore.user?.phone || '',
     documentId: '',
   })
+  const emailConfirm = ref('')
+
+  // Sin sesión el correo es el único camino a los accesos. Cursos y entradas viven
+  // solo ahí, así que se pide dos veces; un pedido físico se puede rescatar por teléfono.
+  const isGuest = computed(() => !userStore.isAuthenticated)
+  const needsEmailConfirm = computed(
+    () => isGuest.value && cart.lines.some((line) => !line.isPhysical),
+  )
   const shipping = reactive<Shipping>({
     fullName: userStore.user?.name || '',
     phone: userStore.user?.phone || '',
@@ -34,7 +47,7 @@ export function useCheckout() {
     address: '',
     notes: '',
   })
-  const buyerErrors = ref<FieldErrors<Buyer>>({})
+  const buyerErrors = ref<BuyerErrors>({})
   const shippingErrors = ref<FieldErrors<Shipping>>({})
 
   const order = ref<Order | null>(null)
@@ -64,9 +77,36 @@ export function useCheckout() {
     }, 1000)
   }
 
+  // El checkout ya no pasa por el guard de sesión: si hay token, el header la restaura
+  // después de montar. Al llegar se completan los datos sin pisar lo ya escrito.
+  watch(
+    () => userStore.user,
+    (user) => {
+      if (!user) return
+      buyer.email = user.email
+      if (!buyer.name) buyer.name = user.name || ''
+      if (!buyer.phone) buyer.phone = user.phone || ''
+      if (!shipping.fullName) shipping.fullName = user.name || ''
+      if (!shipping.phone) shipping.phone = user.phone || ''
+      buyerErrors.value = { ...buyerErrors.value, email: '', emailConfirm: '' }
+    },
+  )
+
+  const cleanEmail = (value: string) => value.trim().toLowerCase()
+
   function validate(): boolean {
-    const b: FieldErrors<Buyer> = {}
+    const b: BuyerErrors = {}
     if (buyer.name.trim().length < 3) b.name = 'Escribe tu nombre completo'
+    if (isGuest.value) {
+      const emailError = rules.email(buyer.email)
+      if (emailError) b.email = emailError
+      else if (
+        needsEmailConfirm.value &&
+        cleanEmail(emailConfirm.value) !== cleanEmail(buyer.email)
+      ) {
+        b.emailConfirm = studentCopy.checkout.emailConfirmError
+      }
+    }
     if (digits(buyer.phone).length < 7) b.phone = 'Escribe un teléfono válido'
     if (![10, 13].includes(digits(buyer.documentId).length) || /\D/.test(buyer.documentId.trim())) {
       b.documentId = 'La cédula tiene 10 dígitos y el RUC 13'
@@ -100,6 +140,8 @@ export function useCheckout() {
         items: cart.lines.map((line) => line.input),
         buyer: {
           name: buyer.name.trim(),
+          // Con sesión el backend usa el correo de la cuenta e ignora este.
+          email: cleanEmail(userStore.user?.email || buyer.email),
           phone: buyer.phone.trim(),
           documentId: buyer.documentId.trim(),
         },
@@ -145,6 +187,9 @@ export function useCheckout() {
     formError,
     notice,
     buyer,
+    emailConfirm,
+    isGuest,
+    needsEmailConfirm,
     shipping,
     buyerErrors,
     shippingErrors,
