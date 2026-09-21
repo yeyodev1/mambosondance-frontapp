@@ -156,6 +156,23 @@ export const site = {
     taller: 'Taller',
     academia: 'Academia',
   },
+  // 404: en la salsa se cuenta 1, 2, 3 — pausa — 5, 6, 7 — pausa. El 4 no se pisa.
+  notFound: {
+    eyebrow: 'Error 404',
+    title: 'En la salsa, el 4',
+    script: 'es una pausa',
+    text: 'Se cuenta uno, dos, tres… y el cuatro no se pisa: se respira. Esta página tampoco existe, así que tómate la pausa y volvamos al ritmo.',
+    countLabel: 'El conteo de la salsa: los tiempos 4 y 8 son pausas',
+    pause: 'Pausa',
+    primaryCta: { label: 'Volver al inicio', to: '/' },
+    links: [
+      { label: 'Clases online', to: '/clases', icon: 'fa-circle-play' },
+      { label: 'Eventos', to: '/eventos', icon: 'fa-calendar-days' },
+      { label: 'Tienda', to: '/tienda', icon: 'fa-bag-shopping' },
+      { label: 'Contacto', to: '/contacto', icon: 'fa-envelope' },
+    ],
+    linksTitle: 'O retoma el paso por aquí',
+  },
   footer: {
     text: 'Academia de salsa. Dibujando música en cada paso.',
     credit: 'Hecho por Bakano',
