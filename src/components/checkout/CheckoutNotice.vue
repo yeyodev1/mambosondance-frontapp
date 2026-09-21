@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { site, whatsappLink } from '@/config/site'
 import { studentCopy } from '@/config/student'
+import { useUserStore } from '@/stores/user'
 import type { CheckoutNoticeKind } from '@/composables/useCheckout'
 
 // Dos situaciones en las que no tiene sentido mostrar la Cajita: los pagos aún no
@@ -9,6 +10,7 @@ import type { CheckoutNoticeKind } from '@/composables/useCheckout'
 const props = defineProps<{ kind: CheckoutNoticeKind; message: string; whatsapp?: string }>()
 
 const copy = studentCopy.checkout
+const userStore = useUserStore()
 const phone = computed(() => props.whatsapp || site.whatsapp)
 </script>
 
@@ -38,7 +40,17 @@ const phone = computed(() => props.whatsapp || site.whatsapp)
       <p class="notice__text">{{ message }}</p>
       <div class="notice__actions">
         <RouterLink class="btn btn--primary" to="/carrito">Volver al carrito</RouterLink>
-        <RouterLink class="btn btn--ghost" to="/cuenta?tab=clases">Ver mis clases</RouterLink>
+        <RouterLink v-if="userStore.isAuthenticated" class="btn btn--ghost" to="/cuenta?tab=clases">
+          Ver mis clases
+        </RouterLink>
+        <!-- Sin sesión, el 409 típico es "este correo ya tiene acceso": la salida es ingresar. -->
+        <RouterLink
+          v-else
+          class="btn btn--ghost"
+          :to="{ name: 'Login', query: { next: '/cuenta?tab=clases' } }"
+        >
+          Iniciar sesión
+        </RouterLink>
       </div>
     </template>
   </section>
