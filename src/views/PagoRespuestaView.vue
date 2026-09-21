@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import OrderSummary, { type SummaryLine } from '@/components/checkout/OrderSummary.vue'
-import TicketCodes from '@/components/checkout/TicketCodes.vue'
+import { onMounted, ref } from 'vue'
+import PaymentSuccess from '@/components/checkout/PaymentSuccess.vue'
 import { usePaymentResult } from '@/composables/usePaymentResult'
 import { orderService } from '@/services/order.service'
 import { site } from '@/config/site'
 import { studentCopy } from '@/config/student'
 
 const copy = studentCopy.payment
-const { state, message, order, tickets, hasCourses, hasPhysical, confirm } = usePaymentResult()
+const {
+  state,
+  message,
+  order,
+  tickets,
+  courses,
+  hasPhysical,
+  email,
+  accountCreated,
+  hasSession,
+  confirm,
+} = usePaymentResult()
 const shippingNote = ref('')
-
-const lines = computed<SummaryLine[]>(() =>
-  (order.value?.items ?? []).map((item, i) => ({
-    key: `${i}-${item.title}`,
-    title: item.title,
-    subtitle: Object.values(item.selectedOptions || {}).join(' · '),
-    quantity: item.quantity,
-    totalCents: item.unitCents * item.quantity,
-    image: item.image,
-  })),
-)
 
 // La confirmación sale apenas carga la vista, sin clics: Payphone reversa el cobro
 // a los 5 minutos si nadie lo confirma.
@@ -44,43 +43,17 @@ onMounted(async () => {
       <p class="result__text">{{ copy.confirmingText }}</p>
     </div>
 
-    <div v-else-if="state === 'paid' && order" class="result__box">
-      <i class="result__icon result__icon--ok fa-solid fa-circle-check" aria-hidden="true"></i>
-      <h1 class="result__title">
-        {{ copy.paidTitle }} <span class="result__script">{{ copy.paidScript }}</span>
-      </h1>
-      <p class="result__text">{{ copy.paidText }} Pedido {{ order.number }}.</p>
-
-      <div class="result__actions">
-        <RouterLink v-if="hasCourses" class="btn btn--primary" to="/cuenta?tab=clases">
-          Ir a mis clases
-        </RouterLink>
-        <RouterLink v-if="tickets.length" class="btn btn--primary" to="/cuenta?tab=entradas">
-          Ver mis entradas
-        </RouterLink>
-        <RouterLink class="btn btn--ghost" to="/cuenta?tab=pedidos">Ver mis pedidos</RouterLink>
-      </div>
-
-      <div class="result__details">
-        <TicketCodes v-if="tickets.length" :tickets="tickets" />
-
-        <p v-if="hasPhysical" class="result__shipping">
-          <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
-          <span>
-            <strong>Envío a {{ order.shipping?.city || 'tu dirección' }}.</strong>
-            {{ shippingNote || 'Te avisaremos por correo cuando tu pedido salga.' }}
-          </span>
-        </p>
-
-        <OrderSummary
-          :lines="lines"
-          :heading="`Pedido ${order.number}`"
-          :total-cents="order.totalCents"
-          :discount-cents="order.discountCents"
-          total-label="Total pagado"
-        />
-      </div>
-    </div>
+    <PaymentSuccess
+      v-else-if="state === 'paid' && order"
+      :order="order"
+      :tickets="tickets"
+      :courses="courses"
+      :has-physical="hasPhysical"
+      :email="email"
+      :account-created="accountCreated"
+      :has-session="hasSession"
+      :shipping-note="shippingNote"
+    />
 
     <div v-else-if="state === 'error'" class="result__box" role="alert">
       <i class="result__icon fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
@@ -91,7 +64,13 @@ onMounted(async () => {
         <button class="btn btn--primary" type="button" @click="confirm">
           Reintentar confirmación
         </button>
-        <RouterLink class="btn btn--ghost" to="/cuenta?tab=pedidos">Ver mis pedidos</RouterLink>
+        <!-- Sin sesión no hay "mis pedidos": la salida es buscar la compra por correo. -->
+        <RouterLink v-if="hasSession" class="btn btn--ghost" to="/cuenta?tab=pedidos">
+          Ver mis pedidos
+        </RouterLink>
+        <RouterLink v-else class="btn btn--ghost" :to="{ name: 'FindPurchase' }">
+          {{ copy.helpLink }}
+        </RouterLink>
       </div>
     </div>
 
@@ -134,19 +113,10 @@ onMounted(async () => {
   &__icon {
     font-size: 2.4rem;
     color: $accent;
-
-    &--ok {
-      color: $success;
-    }
   }
 
   &__title {
     @include display($display-sm);
-  }
-
-  &__script {
-    @include script($display-sm);
-    color: $accent;
   }
 
   &__text {
@@ -163,27 +133,6 @@ onMounted(async () => {
     @include flex(row, center, center, 0.7rem);
     flex-wrap: wrap;
     margin-top: 0.5rem;
-  }
-
-  &__details {
-    @include flex(column, stretch, flex-start, $space-md);
-    width: 100%;
-    margin-top: $space-md;
-    text-align: left;
-  }
-
-  &__shipping {
-    @include flex(row, flex-start, flex-start, 0.7rem);
-    padding: 1rem;
-    font-size: $text-sm;
-    background: $sand;
-    border-radius: $radius-sm;
-    white-space: pre-line;
-
-    i {
-      margin-top: 0.3rem;
-      color: $accent-deep;
-    }
   }
 }
 
