@@ -1,24 +1,52 @@
 <script setup lang="ts">
 import FormField from '@/components/auth/FormField.vue'
-import type { FieldErrors } from '@/composables/useCheckout'
+import { studentCopy } from '@/config/student'
+import type { BuyerErrors } from '@/composables/useCheckout'
 import type { Buyer } from '@/types'
 
 // `buyer` es el objeto reactivo del composable: los campos escriben directo en él.
-defineProps<{ buyer: Buyer; errors: FieldErrors<Buyer>; email?: string }>()
+// Con sesión el correo es el de la cuenta y no se edita; sin sesión es el dato más
+// delicado del pedido, porque ahí llegan los accesos.
+defineProps<{
+  buyer: Buyer
+  errors: BuyerErrors
+  guest: boolean
+  confirmEmail: boolean
+}>()
+
+const emailConfirm = defineModel<string>('emailConfirm', { required: true })
+const copy = studentCopy.checkout
 </script>
 
 <template>
   <fieldset class="buyer">
     <legend class="buyer__legend">Tus datos</legend>
-    <p class="buyer__text">
-      Payphone usa estos datos para validar el pago.
-      <template v-if="email">
-        El comprobante llega a <strong>{{ email }}</strong
-        >.
-      </template>
-    </p>
+    <p class="buyer__text">{{ copy.buyerText }}</p>
 
     <div class="buyer__fields">
+      <FormField
+        id="buyer-email"
+        v-model="buyer.email"
+        label="Correo"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        :readonly="!guest"
+        :hint="guest ? copy.emailHint : copy.emailLockedHint"
+        :error="errors.email"
+        required
+      />
+      <FormField
+        v-if="confirmEmail"
+        id="buyer-email-confirm"
+        v-model="emailConfirm"
+        :label="copy.emailConfirmLabel"
+        type="email"
+        inputmode="email"
+        autocomplete="off"
+        :error="errors.emailConfirm"
+        required
+      />
       <FormField
         id="buyer-name"
         v-model="buyer.name"
@@ -66,7 +94,6 @@ defineProps<{ buyer: Buyer; errors: FieldErrors<Buyer>; email?: string }>()
     font-size: $text-sm;
     color: $ink-soft;
     margin-bottom: $space-md;
-    overflow-wrap: anywhere;
   }
 
   &__fields {
