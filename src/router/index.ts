@@ -76,9 +76,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: { title: 'Finalizar compra', requiresAuth: true },
   },
   {
-    // Payphone redirige acá con ?id=&clientTransactionId= — la URL está registrada
-    // en Payphone Developer, no cambiarla sin actualizarla allá.
-    path: '/pago/respuesta',
+    // Payphone redirige acá con ?id=&clientTransactionId=. La URL registrada en
+    // Payphone Developer es https://mambosondance.com/pay-response: no cambiarla
+    // sin actualizarla allá. El alias conserva la ruta anterior por si quedó en algún enlace.
+    path: '/pay-response',
+    alias: '/pago/respuesta',
     name: 'PaymentResult',
     component: () => import('@/views/PagoRespuestaView.vue'),
     meta: { title: 'Resultado del pago', requiresAuth: true },
