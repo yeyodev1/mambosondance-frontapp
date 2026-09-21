@@ -3,6 +3,8 @@
 defineProps<{
   error?: string
   loading?: boolean
+  /** Bloquea el envío sin mostrarlo como "cargando" (p. ej. la espera entre reenvíos). */
+  disabled?: boolean
   submitLabel: string
   loadingLabel?: string
 }>()
@@ -20,7 +22,7 @@ defineEmits<{ submit: [] }>()
       </p>
     </Transition>
 
-    <button class="btn btn--primary btn--block" type="submit" :disabled="loading">
+    <button class="btn btn--primary btn--block" type="submit" :disabled="loading || disabled">
       <i v-if="loading" class="fa-solid fa-circle-notch fa-spin"></i>
       {{ loading ? loadingLabel || 'Enviando…' : submitLabel }}
     </button>
