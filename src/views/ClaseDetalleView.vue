@@ -59,9 +59,9 @@ const hasPreview = computed(
             </section>
 
             <section v-if="course.modules.length" class="course__block">
-              <h2 class="course__heading">Temario</h2>
+              <h2 class="course__heading">Pensum</h2>
               <p v-if="hasPreview" class="course__hint">
-                Las lecciones marcadas como vista previa se pueden ver sin comprar.
+                La bienvenida y las lecciones marcadas como vista previa se pueden ver sin comprar.
               </p>
               <CourseSyllabus :modules="course.modules" @preview="preview.open" />
             </section>
