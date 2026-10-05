@@ -20,7 +20,8 @@ import { vReveal } from '@/composables/useReveal'
 
 <style scoped lang="scss">
 .quote {
-  background: $paper;
+  // Degradado cálido: el blanco plano se sentía frío junto al rojo de la marquesina.
+  background: linear-gradient(160deg, $sand 0%, $paper 45%, rgba($accent-soft, 0.9) 100%);
 
   &__inner {
     @include container(1080px);
