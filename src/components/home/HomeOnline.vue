@@ -122,6 +122,12 @@ onMounted(run)
   &__copy {
     @include flex(column, flex-start, flex-start, 2rem);
     flex: 1;
+
+    // "a tu ritmo" se leía pegado a "desde casa": baja y crece para que se lea solo.
+    :deep(.heading__script) {
+      margin-top: 0.35em;
+      font-size: calc(#{$display-md} * 1.25);
+    }
   }
 
   &__courses {
