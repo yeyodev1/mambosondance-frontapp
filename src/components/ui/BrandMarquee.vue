@@ -20,11 +20,13 @@ withDefaults(
       <li v-for="item in items" :key="item">{{ item }}</li>
     </ul>
     <div class="marquee__track" :class="{ 'marquee__track--reverse': reverse }" aria-hidden="true">
+      <!-- Las palabras alternan lleno y contorno: cada copia lleva un número par para que el empalme no repita estilo. -->
       <div v-for="copy in 2" :key="copy" class="marquee__group">
-        <template v-for="round in variant === 'words' ? 3 : 1" :key="round">
+        <template v-for="round in variant === 'words' ? 4 : 1" :key="round">
           <span v-for="item in items" :key="`${round}-${item}`" class="marquee__item">
             {{ item }}
             <img
+              v-if="variant === 'phrases'"
               class="marquee__mark"
               :src="tone === 'paper' ? site.logos.iso : site.logos.isoWhite"
               alt=""
@@ -93,9 +95,21 @@ withDefaults(
     opacity: 0.85;
   }
 
+  // Los valores van seguidos, sin isotipo entre ellos: uno lleno, uno en contorno.
   &--words &__item {
     @include display($text-xl, 600);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
+    padding-right: 0.9em;
+
+    &:nth-child(even) {
+      color: transparent;
+      -webkit-text-stroke: 1.5px currentColor;
+      -webkit-text-stroke-color: $on-dark;
+    }
+  }
+
+  &--words.marquee--paper &__item:nth-child(even) {
+    -webkit-text-stroke-color: $ink;
   }
 
   &--phrases &__item {
