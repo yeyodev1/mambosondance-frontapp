@@ -43,6 +43,8 @@ export const site = {
     social: '/img/foto-2.jpg',
     steps: '/img/foto-3.jpg',
     couple: '/img/foto-4.jpg',
+    // Mónica y Cris: la foto de "qué somos". Provisional hasta que la envíen.
+    founders: '/img/foto-4.jpg',
     community: '/img/foto-5.jpg',
     expression: '/img/foto-6.jpg',
     studio: '/img/foto-7.jpg',
@@ -54,10 +56,10 @@ export const site = {
       script: 'se siente',
       text: 'MamboSon es academia, comunidad y familia, donde el bienestar se baila sin prisa, dibujando cada paso.',
       primaryCta: { label: 'Empieza a bailar', to: '/clases' },
-      secondaryCta: { label: 'Conoce la academia', to: '/academia' },
+      secondaryCta: { label: 'Testimonios', to: '/academia#testimonios' },
     },
     quote: {
-      text: 'El ritmo es aquella energía interna que vibra cuando estás en sintonía contigo y con los demás.',
+      text: 'Creemos en una forma de bailar que empieza escuchando, se transforma en movimiento y termina conectándonos.',
     },
     pillars: [
       {
@@ -78,7 +80,7 @@ export const site = {
     ],
     online: {
       eyebrow: 'Clases online',
-      title: 'Aprende desde casa,',
+      title: 'Aprende desde casa',
       script: 'a tu ritmo',
       text: 'Si el tiempo o la distancia no te dejan llegar a la academia, llevamos la clase hasta ti: sesiones grabadas por niveles, para repetir cada paso las veces que necesites.',
       cta: { label: 'Ver clases online', to: '/clases' },
@@ -105,7 +107,7 @@ export const site = {
     },
   },
   academy: {
-    eyebrow: 'La academia',
+    eyebrow: 'Qué somos',
     title: 'Academia, comunidad y',
     script: 'familia',
     manifesto: [
@@ -133,6 +135,29 @@ export const site = {
       ],
       closing:
         'El Mambo es energético y festivo; el Son, fluido y suave. Dos estilos con identidad propia que juntos se complementan: eso es MamboSon.',
+    },
+    testimonials: {
+      eyebrow: 'Testimonios',
+      title: 'Lo que se vive',
+      script: 'en comunidad',
+      text: 'Te dejamos un pequeño resumen de lo que la gente ha vivido con nosotros: sus palabras, sus pasos y lo que se llevan de cada clase.',
+      // El reel de testimonios lo entrega el cliente. Sin video se muestra la foto.
+      videoUrl: '',
+    },
+    inPerson: {
+      eyebrow: 'Clases presenciales',
+      title: '¿Quieres tomar clases presenciales',
+      script: 'con nosotros?',
+      text: 'Te esperamos en la academia: clases por niveles, en grupo, para vivir el ritmo en la pista y en comunidad.',
+      venue: 'Sede Samborondón',
+      // El pensum presencial lo entrega el cliente; mientras tanto no se inventa.
+      pensum: [] as string[],
+      pensumPending:
+        'Muy pronto publicamos el pensum de cada nivel. Escríbenos y te contamos horarios y cupos.',
+      cta: {
+        label: 'Quiero inscribirme',
+        message: 'Hola MamboSon, quiero tomar clases presenciales',
+      },
     },
     values: ['Ritmo', 'Conexión', 'Sinergia', 'Sincronía', 'Expresión'],
     // La reseña del fundador la entrega el cliente; mientras tanto no se inventa.
