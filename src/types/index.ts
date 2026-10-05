@@ -62,6 +62,8 @@ export interface Product {
   style: string
   accessDurationDays: number | null
   lessonsCount: number
+  /** Lecciones de vista previa (la bienvenida): se anuncian aparte del pensum. */
+  previewLessonsCount?: number
   durationSeconds: number
   category: string
   variants: ProductVariant[]
