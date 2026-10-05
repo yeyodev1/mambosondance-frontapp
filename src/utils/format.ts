@@ -49,3 +49,15 @@ export function formatDuration(seconds: number): string {
   const rest = minutes % 60
   return rest ? `${hours} h ${rest} min` : `${hours} h`
 }
+
+/** "6 lecciones + bienvenida": la vista previa no cuenta como clase del pensum. */
+export function lessonsLabel(course: {
+  lessonsCount: number
+  previewLessonsCount?: number
+}): string {
+  const previews = course.previewLessonsCount ?? 0
+  const lessons = course.lessonsCount - previews
+  if (lessons <= 0) return ''
+  const label = `${lessons} ${lessons === 1 ? 'lección' : 'lecciones'}`
+  return previews > 0 ? `${label} + bienvenida` : label
+}
