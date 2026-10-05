@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import type { ProductDetail } from '@/types'
 import { useCartStore } from '@/stores/cart'
 import { courseLine } from '@/utils/cartLines'
-import { formatDuration } from '@/utils/format'
+import { formatDuration, lessonsLabel } from '@/utils/format'
 import PriceTag from '@/components/ui/PriceTag.vue'
 
 const props = defineProps<{ course: ProductDetail }>()
@@ -19,13 +19,10 @@ const accessLabel = computed(() =>
 )
 
 const facts = computed(() => {
-  const lessons = props.course.lessonsCount
+  const lessons = lessonsLabel(props.course)
   return [
     { icon: 'fa-regular fa-clock', text: accessLabel.value },
-    lessons > 0 && {
-      icon: 'fa-solid fa-play',
-      text: `${lessons} ${lessons === 1 ? 'lección' : 'lecciones'}`,
-    },
+    lessons && { icon: 'fa-solid fa-play', text: lessons },
     props.course.durationSeconds > 0 && {
       icon: 'fa-solid fa-hourglass-half',
       text: `${formatDuration(props.course.durationSeconds)} de clase`,
