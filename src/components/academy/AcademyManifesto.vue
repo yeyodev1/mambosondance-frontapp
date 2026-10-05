@@ -8,12 +8,13 @@ const [lead, ...rest] = site.academy.manifesto
 <template>
   <section class="manifesto">
     <div class="manifesto__inner">
-      <div v-reveal class="manifesto__photo">
-        <img :src="site.photos.community" alt="" loading="lazy" decoding="async" />
-      </div>
+      <!-- El texto vive dentro de la foto: la frase y quienes la sostienen, juntos. -->
+      <figure v-reveal class="manifesto__photo">
+        <img :src="site.photos.founders" alt="" loading="lazy" decoding="async" />
+        <figcaption class="manifesto__lead">{{ lead }}</figcaption>
+      </figure>
 
       <div class="manifesto__copy">
-        <p v-reveal class="manifesto__lead">{{ lead }}</p>
         <p
           v-for="(paragraph, index) in rest"
           :key="index"
@@ -38,61 +39,88 @@ const [lead, ...rest] = site.academy.manifesto
 
 <style scoped lang="scss">
 .manifesto {
-  background: $paper;
+  background: linear-gradient(180deg, $paper 0%, $sand 100%);
 
   &__inner {
     @include container;
     @include flex(column, stretch, flex-start, 2.5rem);
     padding-block: $space-section;
-
-    @include from('md') {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 5rem;
-    }
   }
 
   &__photo {
     position: relative;
-    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: flex-end;
+    min-height: 26rem;
     overflow: hidden;
 
     @include from('md') {
-      flex: 0 0 42%;
-      aspect-ratio: 4 / 5;
-      // La foto baja más que el texto: rompe la rejilla a propósito.
-      margin-top: 4rem;
+      min-height: 0;
+      aspect-ratio: 16 / 8;
     }
 
     img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center 30%;
     }
 
+    // Velo vino desde abajo para que la frase se lea sobre cualquier foto.
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(10deg, rgba($wine, 0.7) 0%, transparent 50%);
+      background: linear-gradient(
+        0deg,
+        rgba($wine, 0.95) 0%,
+        rgba($wine, 0.6) 40%,
+        transparent 75%
+      );
+
+      @include from('md') {
+        background: linear-gradient(
+          90deg,
+          rgba($wine, 0.95) 0%,
+          rgba($accent-deep, 0.6) 45%,
+          transparent 75%
+        );
+      }
     }
   }
 
-  &__copy {
-    @include flex(column, flex-start, flex-start, 1.75rem);
-    flex: 1;
-  }
-
   &__lead {
+    position: relative;
+    z-index: 1;
+    padding: 1.75rem 1.5rem;
     font-size: clamp(1.45rem, 1.1rem + 1.8vw, 2.4rem);
     font-weight: 300;
     line-height: 1.3;
     letter-spacing: -0.01em;
-    color: $ink;
+    color: $on-dark;
     text-wrap: balance;
+
+    @include from('md') {
+      align-self: center;
+      max-width: 52%;
+      padding: 3rem;
+    }
+  }
+
+  &__copy {
+    @include flex(column, flex-start, flex-start, 1.5rem);
+
+    @include from('md') {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 3rem;
+    }
   }
 
   &__text {
+    flex: 1;
     font-size: $text-lg;
     font-weight: 300;
     color: $ink-soft;
@@ -102,7 +130,6 @@ const [lead, ...rest] = site.academy.manifesto
   &__mark {
     width: 72px;
     height: auto;
-    margin-top: 1rem;
   }
 }
 </style>
