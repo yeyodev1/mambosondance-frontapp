@@ -4,6 +4,8 @@ import PageHero from '@/components/ui/PageHero.vue'
 import BrandMarquee from '@/components/ui/BrandMarquee.vue'
 import AcademyManifesto from '@/components/academy/AcademyManifesto.vue'
 import AcademyConcept from '@/components/academy/AcademyConcept.vue'
+import AcademyTestimonials from '@/components/academy/AcademyTestimonials.vue'
+import AcademyInPerson from '@/components/academy/AcademyInPerson.vue'
 import AcademyRoots from '@/components/academy/AcademyRoots.vue'
 import AcademyValues from '@/components/academy/AcademyValues.vue'
 import AcademyFounder from '@/components/academy/AcademyFounder.vue'
@@ -24,9 +26,12 @@ const showFounder = !(academy.founderPending as boolean)
     />
     <AcademyManifesto />
     <AcademyConcept />
+    <AcademyTestimonials />
+    <AcademyInPerson />
+    <AcademyFounder v-if="showFounder" />
+    <!-- La historia del nombre y los valores cierran la página, a pedido de la academia. -->
     <AcademyRoots />
     <AcademyValues />
-    <AcademyFounder v-if="showFounder" />
     <BrandMarquee :items="site.phrases" variant="phrases" tone="paper" />
     <AcademyCta />
   </div>
