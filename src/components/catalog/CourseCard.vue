@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { Product } from '@/types'
 import { site } from '@/config/site'
-import { formatDuration } from '@/utils/format'
+import { formatDuration, lessonsLabel } from '@/utils/format'
 import AppImage from '@/components/ui/AppImage.vue'
 import PriceTag from '@/components/ui/PriceTag.vue'
 
@@ -10,8 +10,8 @@ const props = defineProps<{ course: Product }>()
 
 const meta = computed(() => {
   const parts: string[] = []
-  const lessons = props.course.lessonsCount
-  if (lessons > 0) parts.push(`${lessons} ${lessons === 1 ? 'lección' : 'lecciones'}`)
+  const lessons = lessonsLabel(props.course)
+  if (lessons) parts.push(lessons)
   if (props.course.durationSeconds > 0) parts.push(formatDuration(props.course.durationSeconds))
   return parts.join(' · ')
 })
@@ -21,7 +21,9 @@ const meta = computed(() => {
   <RouterLink :to="`/clases/${course.slug}`" class="course">
     <div class="course__media">
       <AppImage :src="course.cover?.url" :alt="course.title" ratio="4/5" :width="720" />
-      <span v-if="course.level" class="course__level">{{ site.levels[course.level] }}</span>
+      <span v-if="course.level" class="course__level" :class="`course__level--${course.level}`">{{
+        site.levels[course.level]
+      }}</span>
       <span class="course__play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
     </div>
     <div class="course__body">
@@ -63,6 +65,17 @@ const meta = computed(() => {
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
+
+    // La academia identifica cada nivel por color: blanco, rojo y negro.
+    &--principiante {
+      background: $surface;
+      color: $ink;
+    }
+
+    &--avanzado {
+      background: $night;
+      color: $on-dark;
+    }
   }
 
   &__play {
