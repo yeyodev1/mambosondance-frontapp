@@ -86,9 +86,12 @@ const hero = site.home.hero
     position: relative;
     padding-block: 7rem 3.5rem;
 
+    // Arriba, no centrado: en una laptop con barras de navegador los botones
+    // deben verse sin bajar.
     @include from('md') {
-      justify-content: center;
-      padding-block: 9rem 6rem;
+      justify-content: flex-start;
+      gap: 1.1rem;
+      padding-block: clamp(6.5rem, 13svh, 8rem) 4rem;
     }
   }
 
@@ -110,11 +113,20 @@ const hero = site.home.hero
     @include display($display-lg);
     @include flex(column, flex-start);
     max-width: 11em;
+
+    // El título se ajusta también al alto de la pantalla, no solo al ancho.
+    @include from('md') {
+      font-size: min(#{$display-lg}, 9.5svh);
+    }
     animation: hero-rise 1.1s $ease 0.2s both;
   }
 
   &__script {
     @include script($display-lg);
+
+    @include from('md') {
+      font-size: min(#{$display-lg}, 9.5svh);
+    }
     display: block;
     margin-top: -0.12em;
     padding-left: 0.3em;
