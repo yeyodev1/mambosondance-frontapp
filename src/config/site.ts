@@ -36,18 +36,18 @@ export const site = {
     iso: '/brand/isotipo.svg',
     isoWhite: '/brand/isotipo-blanco.svg',
   },
-  // Fotografías provisionales tomadas del manual de marca. Se reemplazan por las
-  // fotos reales de la academia cuando el cliente entregue el material.
+  // Fotos reales de la academia (sesión entregada el 2026-10-06). La del hero
+  // sigue siendo la del manual, a pedido del cliente.
   photos: {
     hero: '/img/foto-1.jpg',
-    social: '/img/foto-2.jpg',
-    steps: '/img/foto-3.jpg',
-    couple: '/img/foto-4.jpg',
-    // Mónica y Cris: la foto de "qué somos". Provisional hasta que la envíen.
-    founders: '/img/foto-4.jpg',
-    community: '/img/foto-5.jpg',
-    expression: '/img/foto-6.jpg',
-    studio: '/img/foto-7.jpg',
+    social: '/img/academia/clase-grupo.jpg',
+    steps: '/img/academia/clase-estilo.jpg',
+    couple: '/img/academia/clase-coach.jpg',
+    // "Qué somos": la comunidad reunida. Cuando llegue la foto de Mónica y Cris va aquí.
+    founders: '/img/academia/comunidad-mesa.jpg',
+    community: '/img/academia/clase-pareja.jpg',
+    expression: '/img/academia/profesor-camisa.jpg',
+    studio: '/img/academia/clase-linea.jpg',
   },
   home: {
     hero: {
@@ -150,10 +150,67 @@ export const site = {
       script: 'con nosotros?',
       text: 'Te esperamos en la academia: clases por niveles, en grupo, para vivir el ritmo en la pista y en comunidad.',
       venue: 'Sede Samborondón',
-      // El pensum presencial lo entrega el cliente; mientras tanto no se inventa.
-      pensum: [] as string[],
-      pensumPending:
-        'Muy pronto publicamos el pensum de cada nivel. Escríbenos y te contamos horarios y cupos.',
+      pensumTitle: 'Niveles de clases',
+      // Pensum que maneja la academia (gráfico entregado el 2026-10-06).
+      pensum: [
+        {
+          level: 'Básicos',
+          items: [
+            'Empezamos desde cero con las bases',
+            'Introducción a la salsa',
+            'Por qué contamos los 8 tiempos',
+            'Qué estilo y variación de la salsa verás desde el inicio',
+            'Teoría y mucha práctica',
+          ],
+        },
+        {
+          level: 'Nivel 1',
+          items: [
+            'Figuras en pareja básicas y pasos libres básicos',
+            'Estilo On1 · L.A. (Los Ángeles)',
+          ],
+        },
+        {
+          level: 'Nivel 2',
+          items: [
+            'Figuras en pareja y pasos libres',
+            'Secuencia 1: semicomplicada',
+            'Estilo On1 · L.A. (Los Ángeles)',
+          ],
+        },
+        {
+          level: 'Nivel 3',
+          items: [
+            'Figuras en pareja y pasos libres',
+            'Secuencia 2: complicada',
+            'Estilo On1 · L.A. (Los Ángeles)',
+          ],
+        },
+        {
+          level: 'Nivel 4',
+          items: [
+            'Salsa casino',
+            'Estilo cubano, enfocado en el tiempo 1',
+            'Variaciones, pasos libres y rueda',
+          ],
+        },
+        {
+          level: 'Nivel 5',
+          items: [
+            'Cha cha',
+            'Figuras en pareja y pasos libres en el tiempo 2 de la música',
+            'Estilo New York · On2',
+          ],
+        },
+        {
+          level: 'Intermedio',
+          items: [
+            'Estilo New York · On2, con bases desde cero',
+            'Teoría: bailar sobre la percusión y la melodía, disociación',
+            'Figuras en pareja y pasos libres',
+          ],
+        },
+      ],
       cta: {
         label: 'Quiero inscribirme',
         message: 'Hola MamboSon, quiero tomar clases presenciales',
