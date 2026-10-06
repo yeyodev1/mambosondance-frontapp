@@ -14,10 +14,10 @@ export const site = {
   email: 'team@mambosondance.com',
   // Solo dígitos con código de país, ej: 593984934039. Si el admin lo define en
   // Ajustes, ese valor manda sobre este.
-  whatsapp: '',
+  whatsapp: '593978988465',
   city: '',
   social: {
-    instagram: '',
+    instagram: 'mamboson_dancecorp',
     facebook: '',
     tiktok: '',
   },
